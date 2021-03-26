@@ -3,16 +3,10 @@ package kr.ac.jejunu;
 
 import java.sql.*;
 
-public class UserDao {
+public abstract class UserDao {
     public kr.ac.jejunu.User findById(Integer id) throws ClassNotFoundException, SQLException {
         //데이터 어딨어? => mysql
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection =
-                DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/portal?" +
-                                "characterEncoding=utf-8&serverTimezone=UTC"
-                        ,"root","koko4019"
-                );
+        Connection connection = getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(
                 "select * from  userinfo where id = ?"
         );
@@ -28,5 +22,40 @@ public class UserDao {
         connection.close();
         return user;
     }
+
+    public void insert(User user) throws SQLException, ClassNotFoundException {
+
+
+        Connection connection = getConnection();
+
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                "insert into userinfo (name, password) values ( ?, ? )"
+                ,Statement.RETURN_GENERATED_KEYS
+        );
+        preparedStatement.setString(1,user.getName());
+        preparedStatement.setString(2,user.getPassword());
+
+
+        preparedStatement.executeUpdate();
+
+        ResultSet resultSet = preparedStatement.getGeneratedKeys();
+        resultSet.next();
+
+        user.setId(resultSet.getInt(1));
+
+        preparedStatement.close();
+        connection.close();
+
+    }
+
+    abstract public Connection getConnection() throws ClassNotFoundException, SQLException;
+//    {
+//        Class.forName("com.mysql.cj.jdbc.Driver");
+//        return DriverManager.getConnection(
+//                "jdbc:mysql://localhost:3306/portal?" +
+//                        "characterEncoding=utf-8&serverTimezone=UTC"
+//                , "root", "koko4019"
+//        );
+//    }
 }
 
