@@ -23,13 +23,14 @@ public class DaoFactory {
     private String url;
 
 
-    @Bean
-    public UserDao userDao() throws ClassNotFoundException {
-        return new UserDao(jdbcTemplate());
-    }
+//    @Bean
+//    public UserDao userDao() throws ClassNotFoundException {
+//        return new UserDao(jdbcTemplate());
+//    }
 
-    private JdbcTemplate jdbcTemplate() {
-        return null;
+    @Bean
+    public JdbcTemplate jdbcTemplate() throws ClassNotFoundException {
+        return new JdbcTemplate(dataSource());
     }
 
 //    @Bean
