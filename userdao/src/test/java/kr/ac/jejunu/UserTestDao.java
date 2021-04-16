@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.sql.SQLException;
 
@@ -16,9 +17,12 @@ class UserDaoTests {
     static UserDao userDao;
 
     @BeforeAll
-    public static  void setup(){
-        ApplicationContext applicationContext
-                = new AnnotationConfigApplicationContext(DaoFactory.class);
+    public static void setup() {
+        ClassPathXmlApplicationContext applicationContext;
+        applicationContext = new ClassPathXmlApplicationContext("daoFactory.xml");
+
+//        ApplicationContext applicationContext
+//                = new AnnotationConfigApplicationContext(DaoFactory.class);
         userDao = applicationContext.getBean("userDao", UserDao.class);
 
     }
@@ -38,6 +42,7 @@ class UserDaoTests {
         assertThat(user.getName(), is(name));
         assertThat(user.getPassword(), is(password));
     }
+
     @Test
     public void insert() throws SQLException, ClassNotFoundException {
         String name = "허윤호";
@@ -92,10 +97,9 @@ class UserDaoTests {
         userDao.insert(user);
 
         userDao.delete(user.getId());
-        User deletedUser =userDao.findById(user.getId());
+        User deletedUser = userDao.findById(user.getId());
 
         assertThat(deletedUser, nullValue());
-
 
 
     }
@@ -131,12 +135,6 @@ class UserDaoTests {
 //
 //
 //    }
-
-
-
-
-
-
 
 
 }
